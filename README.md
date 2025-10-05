@@ -270,24 +270,6 @@ export class NovoService { }
 - Lazy loading avançado
 - Service Workers para offline
 
-## 🤝 Contribuição
-
-Este projeto foi desenvolvido como demonstração de competências técnicas para processo seletivo. Para contribuições:
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📞 Contato
-
-Para dúvidas técnicas ou informações sobre o projeto:
-
-- **Email**: [seu-email@exemplo.com]
-- **LinkedIn**: [seu-linkedin]
-- **GitHub**: [seu-github]
-
 ---
 
 ## 📄 Licença
