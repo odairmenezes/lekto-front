@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { cadEmailValidator } from '../../../../shared/validators';
 
 // Angular Material imports
 import { MatCardModule } from '@angular/material/card';
@@ -50,7 +51,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, cadEmailValidator()]],
       password: ['', [Validators.required]]
     });
 
@@ -116,20 +117,15 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (field.errors['required']) {
         return `${fieldName === 'password' ? 'Senha' : 'Email'} é obrigatório`;
       }
+      if (field.errors['cadEmailInvalid']) {
+        return field.errors['cadEmailInvalid'].message;
+      }
       if (field.errors['email']) {
         return 'Email deve ser válido';
       }
     }
     
     return '';
-  }
-
-  navigateToRegister(): void {
-    this.router.navigate(['/auth/register']);
-  }
-
-  navigateToForgotPassword(): void {
-    this.router.navigate(['/auth/forgot-password']);
   }
 
 }

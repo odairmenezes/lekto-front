@@ -1,6 +1,48 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 /**
+ * Validador para email com formato rigoroso
+ */
+export function cadEmailValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control.value) return null;
+
+    const email = control.value.trim();
+    
+    // Regex mais rigoroso para email
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    if (!emailRegex.test(email)) {
+      return { cadEmailInvalid: { message: 'Email deve ter formato válido (ex: usuario@dominio.com)' } };
+    }
+
+    // Verificar se tem pelo menos um ponto após o @
+    const parts = email.split('@');
+    if (parts.length !== 2) {
+      return { cadEmailInvalid: { message: 'Email deve ter formato válido' } };
+    }
+
+    const domain = parts[1];
+    if (!domain.includes('.')) {
+      return { cadEmailInvalid: { message: 'Domínio deve ter extensão válida (ex: .com, .br)' } };
+    }
+
+    // Verificar se o domínio não termina com ponto
+    if (domain.endsWith('.')) {
+      return { cadEmailInvalid: { message: 'Domínio não pode terminar com ponto' } };
+    }
+
+    // Verificar se a extensão tem pelo menos 2 caracteres
+    const extension = domain.split('.').pop();
+    if (!extension || extension.length < 2) {
+      return { cadEmailInvalid: { message: 'Extensão do domínio deve ter pelo menos 2 caracteres' } };
+    }
+
+    return null;
+  };
+}
+
+/**
  * Validador para CPF seguindo as especificações do desafio
  */
 export function cadCpfValidator(): ValidatorFn {

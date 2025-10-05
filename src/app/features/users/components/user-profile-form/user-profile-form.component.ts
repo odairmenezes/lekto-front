@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UsersService } from '../../services/users.service';
 import { UserResponse, UserCreateDto, UserUpdateDto, UserService } from '../../../../core/services/user.service';
 import { Address } from '../../../../shared/models/user.model';
-import { cpfValidator, passwordValidator, basePasswordMatchValidator as passwordMatchValidator, cadCpfValidator, cadNameValidator, cadPasswordValidator, cadPhoneValidator, zipCodeValidator } from '../../../../shared/validators';
+import { cpfValidator, passwordValidator, basePasswordMatchValidator as passwordMatchValidator, cadCpfValidator, cadNameValidator, cadPasswordValidator, cadPhoneValidator, zipCodeValidator, cadEmailValidator } from '../../../../shared/validators';
 import { NotificationService } from '../../../../core/services/notification.service';
 
 // Angular Material imports
@@ -141,7 +141,7 @@ export class UserProfileFormComponent implements OnInit, OnDestroy {
     this.userForm = this.fb.group({
       firstName: ['', [Validators.required, cadNameValidator()]],
       lastName: ['', [Validators.required, cadNameValidator()]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, cadEmailValidator()]],
       cpf: ['', this.isEditMode ? [] : [Validators.required, cadCpfValidator()]],
       phone: ['', [Validators.required, cadPhoneValidator()]],
       password: ['', this.isEditMode ? [] : [Validators.required, cadPasswordValidator()]],
@@ -156,9 +156,9 @@ export class UserProfileFormComponent implements OnInit, OnDestroy {
     // Formulário de endereço (para adicionar novos)
     this.addressForm = this.fb.group({
       street: ['', [Validators.required]],
-      number: [''],
+      number: ['', [Validators.required]],
       complement: [''],
-      neighborhood: [''],
+      neighborhood: ['', [Validators.required]],
       city: ['', [Validators.required]],
       state: ['', [Validators.required]],
       zipCode: ['', [Validators.required, zipCodeValidator]],
@@ -618,7 +618,7 @@ export class UserProfileFormComponent implements OnInit, OnDestroy {
   }
 
   private markAddressFieldsAsTouched(): void {
-    const fields = ['street', 'city', 'state', 'zipCode', 'country'];
+    const fields = ['street', 'number', 'neighborhood', 'city', 'state', 'zipCode', 'country'];
     fields.forEach(field => {
       const control = this.addressForm.get(field);
       if (control) control.markAsTouched();

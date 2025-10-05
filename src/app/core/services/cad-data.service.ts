@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { 
   User, 
@@ -703,16 +703,32 @@ export class CadDataService {
   // ====== VALIDAÇÕES ======
 
   checkEmailExists(email: string): Observable<boolean> {
-    return this.http.get(`${this.apiUrl}/users/check-email/${email}`, this.getHttpOptions()).pipe(
-      map((response: any) => response as boolean),
-      catchError(this.handleError.bind(this))
+    // Como a rota específica não existe, vamos buscar todos os usuários e verificar
+    return this.http.get(`${this.apiUrl}/users?page=1&pageSize=1000`, this.getHttpOptions()).pipe(
+      map((response: any) => {
+        const users = response.Data?.Data || response.data?.data || [];
+        return users.some((user: any) => user.Email?.toLowerCase() === email.toLowerCase());
+      }),
+      catchError((error) => {
+        console.error('Erro ao verificar email:', error);
+        // Em caso de erro, retornar false para permitir tentativa de cadastro
+        return of(false);
+      })
     );
   }
 
   checkCpfExists(cpf: string): Observable<boolean> {
-    return this.http.get(`${this.apiUrl}/users/check-cpf/${cpf}`, this.getHttpOptions()).pipe(
-      map((response: any) => response as boolean),
-      catchError(this.handleError.bind(this))
+    // Como a rota específica não existe, vamos buscar todos os usuários e verificar
+    return this.http.get(`${this.apiUrl}/users?page=1&pageSize=1000`, this.getHttpOptions()).pipe(
+      map((response: any) => {
+        const users = response.Data?.Data || response.data?.data || [];
+        return users.some((user: any) => user.Cpf?.replace(/\D/g, '') === cpf.replace(/\D/g, ''));
+      }),
+      catchError((error) => {
+        console.error('Erro ao verificar CPF:', error);
+        // Em caso de erro, retornar false para permitir tentativa de cadastro
+        return of(false);
+      })
     );
   }
 

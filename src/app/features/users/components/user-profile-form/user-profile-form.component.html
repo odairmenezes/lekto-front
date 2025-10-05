@@ -27,7 +27,7 @@
                          formControlName="firstName"
                          placeholder="Digite o nome">
                   <mat-error *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
-                    Nome é obrigatório
+                    {{ userForm.get('firstName')?.errors?.['cadNameLength']?.message || userForm.get('firstName')?.errors?.['cadNameInvalid']?.message || 'Nome é obrigatório' }}
                   </mat-error>
                 </mat-form-field>
 
@@ -37,7 +37,7 @@
                          formControlName="lastName"
                          placeholder="Digite o sobrenome">
                   <mat-error *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
-                    Sobrenome é obrigatório
+                    {{ userForm.get('lastName')?.errors?.['cadNameLength']?.message || userForm.get('lastName')?.errors?.['cadNameInvalid']?.message || 'Sobrenome é obrigatório' }}
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -62,7 +62,7 @@
                          formControlName="email"
                          placeholder="Digite o email">
                   <mat-error *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
-                    Email inválido
+                    {{ userForm.get('email')?.errors?.['cadEmailInvalid']?.message || 'Email inválido' }}
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -306,10 +306,13 @@
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="quarter-width">
-                    <mat-label>Número</mat-label>
+                    <mat-label>Número *</mat-label>
                     <input matInput 
                            formControlName="number"
                            placeholder="123">
+                    <mat-error *ngIf="addressForm.get('number')?.invalid && addressForm.get('number')?.touched">
+                      Número é obrigatório
+                    </mat-error>
                   </mat-form-field>
                 </div>
 
@@ -357,10 +360,13 @@
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="quarter-width">
-                    <mat-label>Bairro</mat-label>
+                    <mat-label>Bairro *</mat-label>
                     <input matInput 
                            formControlName="neighborhood"
                            placeholder="Digite o bairro">
+                    <mat-error *ngIf="addressForm.get('neighborhood')?.invalid && addressForm.get('neighborhood')?.touched">
+                      Bairro é obrigatório
+                    </mat-error>
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="quarter-width">

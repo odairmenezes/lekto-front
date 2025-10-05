@@ -26,7 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
         </div>
         
         <div class="auth-footer">
-          <p>&copy; 2024 Cad+ ERP. Todos os direitos reservados.</p>
+          <p>&copy; 2025 Cad+ ERP. Todos os direitos reservados.</p>
         </div>
       </div>
       

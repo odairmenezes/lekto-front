@@ -5,7 +5,6 @@ import { NoAuthGuard } from './core/guards/no-auth.guard';
 // Imports diretos para componentes standalone
 import { DashboardComponent } from './features/dashboard/components/dashboard/dashboard.component';
 import { ContactComponent } from './features/dashboard/components/contact/contact.component';
-import { UserRegistrationComponent } from './shared/components/user-registration/user-registration.component';
 
 export const routes: Routes = [
   {
@@ -16,11 +15,6 @@ export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule),
-    canActivate: [NoAuthGuard]
-  },
-  {
-    path: 'register',
-    component: UserRegistrationComponent,
     canActivate: [NoAuthGuard]
   },
   {

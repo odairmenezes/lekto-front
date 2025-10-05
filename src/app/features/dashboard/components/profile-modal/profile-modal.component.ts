@@ -7,7 +7,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { User } from '../../../../shared/models/user.model';
 import { UserService } from '../../../../core/services/user.service';
 import { NotificationService } from '../../../../core/services/notification.service';
-import { cpfValidator, cadPasswordValidator } from '../../../../shared/validators';
+import { cpfValidator, cadPasswordValidator, cadEmailValidator, cadNameValidator } from '../../../../shared/validators';
 
 // Angular Material imports
 import { MatCardModule } from '@angular/material/card';
@@ -81,9 +81,9 @@ export class ProfileModalComponent implements OnInit, OnDestroy {
 
   private createForm(): void {
     this.profileForm = this.fb.group({
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
+      firstName: ['', [Validators.required, cadNameValidator()]],
+      lastName: ['', [Validators.required, cadNameValidator()]],
+      email: ['', [Validators.required, cadEmailValidator()]],
       cpf: ['', [Validators.required, this.simpleCpfValidator]], // Usando validador simples
       phone: ['', [Validators.required, Validators.minLength(10)]]
     });
@@ -295,6 +295,15 @@ export class ProfileModalComponent implements OnInit, OnDestroy {
     }
     if (field?.hasError('email')) {
       return 'Email inválido';
+    }
+    if (field?.hasError('cadEmailInvalid')) {
+      return field.errors?.['cadEmailInvalid']?.message || 'Email inválido';
+    }
+    if (field?.hasError('cadNameLength')) {
+      return field.errors?.['cadNameLength']?.message || 'Nome deve ter pelo menos 4 caracteres';
+    }
+    if (field?.hasError('cadNameInvalid')) {
+      return field.errors?.['cadNameInvalid']?.message || 'Nome deve conter apenas letras e espaços';
     }
     if (field?.hasError('minlength')) {
       return `${this.getFieldLabel(fieldName)} deve ter pelo menos ${field.errors?.['minlength'].requiredLength} caracteres`;

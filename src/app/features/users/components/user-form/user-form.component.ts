@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UsersService } from '../../services/users.service';
 import { UserResponse, UserCreateDto, UserUpdateDto, UserService } from '../../../../core/services/user.service';
 import { Address } from '../../../../shared/models/user.model';
-import { cpfValidator, passwordValidator, basePasswordMatchValidator as passwordMatchValidator, cadCpfValidator, cadNameValidator, cadPasswordValidator, cadPhoneValidator, zipCodeValidator } from '../../../../shared/validators';
+import { cpfValidator, passwordValidator, basePasswordMatchValidator as passwordMatchValidator, cadCpfValidator, cadNameValidator, cadPasswordValidator, cadPhoneValidator, zipCodeValidator, cadEmailValidator } from '../../../../shared/validators';
 import { NotificationService } from '../../../../core/services/notification.service';
 
 // Angular Material imports
@@ -122,7 +122,7 @@ export class UserFormComponent implements OnInit, OnDestroy {
     this.userForm = this.fb.group({
       firstName: ['', [Validators.required, cadNameValidator()]],
       lastName: ['', [Validators.required, cadNameValidator()]],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.required, cadEmailValidator()]],
       cpf: ['', this.isEditMode ? [] : [Validators.required, cadCpfValidator()]],
       phone: ['', [Validators.required, cadPhoneValidator()]],
       
@@ -562,6 +562,27 @@ export class UserFormComponent implements OnInit, OnDestroy {
     if (field?.errors && field.touched) {
       const errors = field.errors;
       
+      // Verificar erros específicos primeiro (antes do required)
+      if (errors['cadNameLength']) return errors['cadNameLength']['message'];
+      if (errors['cadNameInvalid']) return errors['cadNameInvalid']['message'];
+      if (errors['cadEmailInvalid']) return errors['cadEmailInvalid']['message'];
+      if (errors['cadCpfInvalid']) return errors['cadCpfInvalid']['message'];
+      if (errors['cadPhoneInvalid']) return errors['cadPhoneInvalid']['message'];
+      
+      // Erros específicos de senha
+      if (errors['passwordLowercase']) return errors['passwordLowercase']['message'];
+      if (errors['passwordUppercase']) return errors['passwordUppercase']['message'];
+      if (errors['passwordSpecial']) return errors['passwordSpecial']['message'];
+      if (errors['passwordNumber']) return errors['passwordNumber']['message'];
+      if (errors['passwordMinLength']) return errors['passwordMinLength']['message'];
+      
+      // Erros padrão do Angular
+      if (errors['email']) return 'Email deve ser válido';
+      if (errors['minlength']) return 'Deve ter pelo menos 2 caracteres';
+      if (errors['pattern']) return 'Formato inválido';
+      if (errors['cpfInvalid']) return errors['cpfInvalid']['message'];
+      
+      // Erro de campo obrigatório por último
       if (errors['required']) {
         const labels = {
           firstName: 'Nome',
@@ -574,18 +595,6 @@ export class UserFormComponent implements OnInit, OnDestroy {
         };
         return `${labels[fieldName as keyof typeof labels]} é obrigatório`;
       }
-      
-      if (errors['email']) return 'Email deve ser válido';
-      if (errors['minlength']) return 'Deve ter pelo menos 2 caracteres';
-      if (errors['pattern']) return 'Formato inválido';
-      if (errors['cpfInvalid']) return errors['cpfInvalid']['message'];
-      
-      // Erros específicos de senha
-      if (errors['passwordLowercase']) return errors['passwordLowercase']['message'];
-      if (errors['passwordUppercase']) return errors['passwordUppercase']['message'];
-      if (errors['passwordSpecial']) return errors['passwordSpecial']['message'];
-      if (errors['passwordNumber']) return errors['passwordNumber']['message'];
-      if (errors['passwordMinLength']) return errors['passwordMinLength']['message'];
     }
     
     return '';

@@ -84,20 +84,11 @@
 
 .login-options {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin: 8px 0;
 }
 
-.forgot-password-link {
-  color: #667eea;
-  text-decoration: none;
-  font-size: 0.9rem;
-  
-  &:hover {
-    text-decoration: underline;
-  }
-}
 
 .login-button {
   margin-top: 16px;
