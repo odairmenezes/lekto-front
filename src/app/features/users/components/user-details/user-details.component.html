@@ -1,0 +1,163 @@
+<div class="user-details-container">
+  <!-- Menu Inicial Button -->
+  <div class="menu-inicial-container">
+    <button mat-raised-button color="primary"
+            class="menu-inicial-btn-standalone"
+            (click)="navigateToHome()">
+      <mat-icon>home</mat-icon>
+      Menu Inicial
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="48"></mat-spinner>
+    <p>Carregando dados do usuário...</p>
+  </div>
+
+  <!-- User Details Content -->
+  <div *ngIf="!isLoading && user" class="details-content">
+    <!-- Header -->
+    <div class="details-header">
+      <div class="header-info">
+        <button mat-icon-button (click)="goBack()" matTooltip="Voltar">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="user-title">
+          <h1>{{ user.firstName }} {{ user.lastName }}</h1>
+          <mat-chip [color]="getStatusColor(user.isActive)" class="user-chip">
+            <mat-icon class="status-icon">{{ getStatusIcon(user.isActive) }}</mat-icon>
+            {{ getStatusText(user.isActive) }}
+          </mat-chip>
+        </div>
+      </div>
+      <!-- Botões de ação removidos da visualização de detalhes -->
+    </div>
+
+    <!-- User Information Cards -->
+    <div class="details-grid">
+      <!-- Personal Information -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>person</mat-icon>
+            Informações Pessoais
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Nome Completo:</span>
+              <span class="info-value">{{ user.firstName }} {{ user.lastName }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Email:</span>
+              <span class="info-value">{{ user.email }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">CPF:</span>
+              <span class="info-value">{{ user.cpf | cpf }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Telefone:</span>
+              <span class="info-value">{{ user.phone | phone }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- System Information -->
+      <mat-card class="detail-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>settings</mat-icon>
+            Informações do Sistema
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">ID do Usuário:</span>
+              <span class="info-value">{{ user.id }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Status da Conta:</span>
+              <span class="info-value">
+                <mat-chip [color]="getStatusColor(user.isActive)">
+                  <mat-icon>{{ getStatusIcon(user.isActive) }}</mat-icon>
+                  {{ getStatusText(user.isActive) }}
+                </mat-chip>
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Criado em:</span>
+              <span class="info-value">{{ getMemberSince() }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Última Atualização:</span>
+              <span class="info-value">{{ getLastUpdate() }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Addresses -->
+      <mat-card class="detail-card addresses-card" *ngIf="user.addresses && user.addresses.length > 0">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>location_on</mat-icon>
+            Endereços ({{ user.addresses.length }})
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="addresses-list" *ngFor="let address of user.addresses; let i = index">
+            <div class="address-item">
+              <div class="address-header">
+                <mat-chip *ngIf="address.isMain" color="primary" class="main-address-chip">
+                  <mat-icon>star</mat-icon>
+                  Principal
+                </mat-chip>
+                <span class="address-type" *ngIf="!address.isMain">Endereço {{ i + 1 }}</span>
+              </div>
+              <div class="address-details">
+                <p><strong>{{ address.street }}, {{ address.number }}</strong></p>
+                <p *ngIf="address.complement">{{ address.complement }}</p>
+                <p>{{ address.neighborhood }}</p>
+                <p>{{ address.city }} - {{ address.state }}</p>
+                <p>{{ address.zipCode }} - {{ address.country }}</p>
+              </div>
+            </div>
+            <mat-divider *ngIf="i < user.addresses!.length - 1"></mat-divider>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- No Addresses Message -->
+      <mat-card class="detail-card" *ngIf="!user.addresses || user.addresses.length === 0">
+        <mat-card-content>
+          <div class="no-data">
+            <mat-icon>location_off</mat-icon>
+            <p>Nenhum endereço cadastrado</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading && !user" class="error-container">
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon color="warn">error</mat-icon>
+          <h2>Usuário não encontrado</h2>
+          <p>O usuário solicitado não foi encontrado ou foi removido.</p>
+          <button mat-raised-button color="primary" (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+            Voltar
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

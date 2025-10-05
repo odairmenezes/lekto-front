@@ -1,0 +1,353 @@
+/* Global Styles for Cad+ ERP */
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.margin-top {
+  margin-top: 16px;
+}
+
+.margin-bottom {
+  margin-bottom: 16px;
+}
+
+.margin-left {
+  margin-left: 16px;
+}
+
+.margin-right {
+  margin-right: 16px;
+}
+
+.padding {
+  padding: 16px;
+}
+
+.padding-small {
+  padding: 8px;
+}
+
+.padding-large {
+  padding: 32px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.gap-4 {
+  gap: 4px;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.gap-12 {
+  gap: 12px;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.gap-24 {
+  gap: 24px;
+}
+
+/* Material Overrides */
+.mat-button,
+.mat-raised-button,
+.mat-stroked-button,
+.mat-flat-button {
+  border-radius: 8px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+.mat-form-field {
+  .mat-form-field-outline {
+    border-radius: 8px !important;
+  }
+}
+
+.mat-card {
+  border-radius: 12px !important;
+}
+
+.mat-chip {
+  border-radius: 16px !important;
+}
+
+.mat-dialog-container {
+  border-radius: 12px !important;
+}
+
+/* Focus Styles */
+*:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+.mat-button:focus,
+.mat-raised-button:focus,
+.mat-stroked-button:focus,
+.mat-flat-button:focus {
+  outline: none;
+}
+
+/* Loading States */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Error States */
+.error-text {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 4px;
+}
+
+.success-text {
+  color: #2e7d32;
+  font-size: 0.875rem;
+}
+
+.warning-text {
+  color: #ed6c02;
+  font-size: 0.875rem;
+}
+
+.info-text {
+  color: #1976d2;
+  font-size: 0.875rem;
+}
+
+/* Responsive Utilities */
+.mobile-only {
+  display: none;
+}
+
+.tablet-up {
+  display: block;
+}
+
+@media (max-width: 767px) {
+  .mobile-only {
+    display: block;
+  }
+  
+  .tablet-up {
+    display: none;
+  }
+  
+  .container {
+    padding: 0 8px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  .mat-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .mat-form-field-outline {
+    border-width: 2px !important;
+  }
+  
+  .mat-button,
+  .mat-raised-button,
+  .mat-stroked-button {
+    border-width: 2px !important;
+  }
+}
+
+/* Modal customizations for user profile */
+.user-profile-dialog {
+  .mat-mdc-dialog-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mat-mdc-dialog-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: hidden;
+  }
+  
+  .mat-mdc-dialog-actions {
+    padding: 16px 24px !important;
+    margin: 0 !important;
+    border-top: 1px solid #e0e0e0;
+  }
+}
+
+/* Modal customizations for profile modal */
+.profile-modal-dialog {
+  .mat-mdc-dialog-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    padding: 0 !important;
+  }
+  
+  .mat-mdc-dialog-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: hidden;
+  }
+  
+  .mat-mdc-dialog-actions {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* Modal customizations for audit modal */
+.audit-modal-dialog {
+  .mat-mdc-dialog-container {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    padding: 0 !important;
+  }
+  
+  .mat-mdc-dialog-content {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: hidden;
+  }
+  
+  .mat-mdc-dialog-actions {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}

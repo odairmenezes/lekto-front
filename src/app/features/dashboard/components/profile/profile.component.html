@@ -1,0 +1,192 @@
+<div class="profile-container">
+  
+  <!-- Header -->
+  <div class="profile-header">
+    <div class="user-avatar-section">
+      <div class="user-avatar">
+        <span class="avatar-text">{{ getUserInitials() }}</span>
+      </div>
+      <div class="user-info">
+        <h1 class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</h1>
+        <p class="user-email">{{ currentUser?.email }}</p>
+        <div class="user-meta">
+          <span class="member-since">Membro desde {{ getMemberSince() }}</span>
+          <span class="last-login">Última conexão: {{ getLastLogin() }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Botão Menu Principal -->
+      <button mat-raised-button 
+              color="primary"
+              (click)="navigateToDashboard()"
+              class="menu-btn">
+        <mat-icon>home</mat-icon>
+        Menu Principal
+      </button>
+
+      <!-- Botão Editar Perfil -->
+      <button mat-stroked-button 
+              (click)="toggleEdit()"
+              *ngIf="!isEditing">
+        <mat-icon>edit</mat-icon>
+        Editar Perfil
+      </button>
+      
+      <!-- Botão Logout -->
+      <button mat-icon-button 
+              (click)="logout()"
+              title="Sair do sistema"
+              class="logout-btn">
+        <mat-icon>logout</mat-icon>
+      </button>
+      
+      <div *ngIf="isEditing" class="edit-actions">
+        <button mat-button 
+                (click)="cancelEdit()">
+          Cancelar
+        </button>
+        <button mat-raised-button 
+                color="primary"
+                (click)="onSubmit()"
+                [disabled]="profileForm.invalid || isLoading">
+          <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+          <span *ngIf="!isLoading">Salvar</span>
+        </button>
+      </div>
+      
+      <button mat-icon-button (click)="openPasswordChange()" matTooltip="Alterar senha">
+        <mat-icon>lock</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Form -->
+  <div class="profile-form-section">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          Informações Pessoais
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="profileForm" class="profile-form">
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nome</mat-label>
+              <input matInput 
+                     formControlName="firstName"
+                     placeholder="Digite seu nome">
+              <mat-error *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+                {{ getFieldErrorMessage('firstName') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Sobrenome</mat-label>
+              <input matInput 
+                     formControlName="lastName"
+                     placeholder="Digite seu sobrenome">
+              <mat-error *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+                {{ getFieldErrorMessage('lastName') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Email</mat-label>
+              <input matInput 
+                     type="email"
+                     formControlName="email"
+                     placeholder="Digite seu email">
+              <mat-icon matSuffix>email</mat-icon>
+              <mat-hint>Este campo não pode ser alterado</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>CPF</mat-label>
+              <input matInput 
+                     formControlName="cpf"
+                     placeholder="000.000.000-00"
+                     readonly>
+              <mat-icon matSuffix>verified</mat-icon>
+              <mat-hint>Documento verificado - não pode ser alterado</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Telefone</mat-label>
+            <input matInput 
+                   formControlName="phone"
+                   placeholder="(11) 99999-9999"
+                   maxlength="15"
+                   mask="(00) 00000-0000"
+                   (input)="onPhoneInput($event)">
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-hint>Digite apenas números (11) 99999-9999</mat-hint>
+            <mat-error *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+              {{ getFieldErrorMessage('phone') }}
+            </mat-error>
+          </mat-form-field>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Security Section -->
+  <div class="security-section">
+    <mat-card class="security-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>security</mat-icon>
+          Segurança da Conta
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="security-options">
+          
+          <div class="security-item">
+            <div class="security-info">
+              <h4>Alterar Senha</h4>
+              <p>Atualize sua senha para manter sua conta segura</p>
+            </div>
+            <button mat-stroked-button (click)="openPasswordChange()">
+              Alterar Senha
+            </button>
+          </div>
+
+          <div class="security-item">
+            <div class="security-info">
+              <h4>Exportar Dados</h4>
+              <p>Baixe uma cópia de todos os seus dados pessoais</p>
+            </div>
+            <button mat-stroked-button (click)="exportData()">
+              Exportar
+            </button>
+          </div>
+
+          <div class="security-item danger-item">
+            <div class="security-info">
+              <h4>Excluir Conta</h4>
+              <p>Remover permanentemente sua conta e todos os dados associados</p>
+            </div>
+            <button mat-stroked-button 
+                    color="warn" 
+                    (click)="deleteAccount()">
+              Excluir Conta
+            </button>
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>

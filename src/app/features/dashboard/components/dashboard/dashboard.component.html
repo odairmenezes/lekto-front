@@ -1,0 +1,204 @@
+<div class="dashboard-container">
+  <!-- Header de Boas-vindas -->
+  <div class="welcome-header">
+    <div class="welcome-content">
+      <div class="greeting-section">
+        <h1 class="time-greeting">{{ timeGreeting }}</h1>
+        <h2 class="welcome-message">{{ welcomeMessage }}</h2>
+        <p class="subtitle">
+          Sistema de gestão hospitalar Cad+ ERP
+          <mat-chip-set>
+            <mat-chip class="status-chip healthy">
+              <mat-icon>health_and_safety</mat-icon>
+              Sistema Operacional
+            </mat-chip>
+          </mat-chip-set>
+        </p>
+      </div>
+      
+      <div class="user-info">
+        <div class="user-avatar">
+          <mat-icon>account_circle</mat-icon>
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ fullUserName }}</span>
+          <span class="user-role">Administrador do Sistema</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button mat-icon-button (click)="logout()" class="logout-btn" title="Sair do sistema">
+        <mat-icon>logout</mat-icon>
+      </button>
+      <button mat-fab color="primary" class="refresh-btn" (click)="refreshDashboard()" [disabled]="isLoading">
+        <mat-icon>{{ isLoading ? 'refresh' : 'refresh' }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Estatísticas do Sistema -->
+  <div class="stats-section" *ngIf="!isLoading">
+    <h2>Estatísticas do Sistema</h2>
+    <div class="stats-grid">
+      <mat-card class="stat-card primary">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>{{ getStatTitle('totalUsers') }}</h3>
+              <span class="stat-number">{{ formatNumber(dashboardStats.totalUsers) }}</span>
+            </div>
+            <mat-icon class="stat-icon">{{ getStatIcon('totalUsers') }}</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card accent">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>{{ getStatTitle('activeUsers') }}</h3>
+              <span class="stat-number">{{ formatNumber(dashboardStats.activeUsers) }}</span>
+              <span class="stat-percentage">{{ activeUsersPercentage }}% ativos</span>
+            </div>
+            <mat-icon class="stat-icon">{{ getStatIcon('activeUsers') }}</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card warn">
+        <mat-card-content>
+          <div class="stat-content">
+            <div class="stat-info">
+              <h3>{{ getStatTitle('recentLogins') }}</h3>
+              <span class="stat-number">{{ formatNumber(dashboardStats.recentLogins) }}</span>
+            </div>
+            <mat-icon class="stat-icon">{{ getStatIcon('recentLogins') }}</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-section" *ngIf="isLoading">
+    <mat-spinner diameter="60"></mat-spinner>
+    <p>Carregando informações do sistema...</p>
+  </div>
+
+  <!-- Ações Rápidas -->
+  <div class="quick-actions-section" *ngIf="!isLoading">
+    <h2>Ações Rápidas</h2>
+    <div class="actions-grid">
+      <mat-card 
+        *ngFor="let action of quickActions" 
+        class="action-card"
+        [class]="'action-' + action.color"
+        (click)="navigateToAction(action.route)">
+        
+        <mat-card-content>
+          <div class="action-content">
+            <mat-icon class="action-icon">{{ action.icon }}</mat-icon>
+            <h3>{{ action.title }}</h3>
+            <p>{{ action.description }}</p>
+          </div>
+          
+          <mat-icon class="action-arrow">arrow_forward</mat-icon>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- Informações do Sistema -->
+  <div class="system-info-section" *ngIf="!isLoading">
+    <div class="info-section-header">
+      <h2>Informações do Sistema</h2>
+    </div>
+    
+    <div class="info-grid">
+      <mat-card *ngFor="let info of systemInfo" class="info-card">
+        <mat-card-content>
+          <div class="info-content">
+            <mat-icon [class]="'info-icon ' + (info.status || '')">{{ info.icon }}</mat-icon>
+            <div class="info-details">
+              <h4>{{ info.label }}</h4>
+              <span>{{ info.value }}</span>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+
+  <!-- Configurações do Sistema -->
+  <div class="system-config-section" *ngIf="!isLoading">
+    <h2>Configurações do Sistema</h2>
+    <mat-card>
+      <mat-card-content>
+        <div class="config-item">
+          <mat-icon class="config-icon">settings</mat-icon>
+          <div class="config-details">
+            <p><strong>Ambiente:</strong> {{ environment.production ? 'Produção' : 'Desenvolvimento' }}</p>
+            <span>{{ environment.appName }} v{{ environment.version }}</span>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="config-item">
+          <mat-icon class="config-icon">api</mat-icon>
+          <div class="config-details">
+            <p><strong>API URL:</strong> {{ environment.apiUrl }}</p>
+            <span>Endpoint principal do sistema</span>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="config-item">
+          <mat-icon class="config-icon">bug_report</mat-icon>
+          <div class="config-details">
+            <p><strong>Debug:</strong> {{ environment.config.features.debug ? 'Habilitado' : 'Desabilitado' }}</p>
+            <span>Modo de desenvolvimento</span>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="config-item">
+          <mat-icon class="config-icon">history</mat-icon>
+          <div class="config-details">
+            <p><strong>Auditoria:</strong> {{ environment.config.features.auditLogs ? 'Habilitada' : 'Desabilitada' }}</p>
+            <span>Logs de atividades do sistema</span>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="config-item">
+          <mat-icon class="config-icon">schedule</mat-icon>
+          <div class="config-details">
+            <p><strong>Timeout API:</strong> {{ environment.config.api.timeout }}ms</p>
+            <span>Tempo limite para requisições</span>
+          </div>
+        </div>
+        
+        <mat-divider></mat-divider>
+        
+        <div class="config-item">
+          <mat-icon class="config-icon">view_list</mat-icon>
+          <div class="config-details">
+            <p><strong>Página Padrão:</strong> {{ environment.config.pagination.defaultPageSize }} itens</p>
+            <span>Quantidade padrão por página</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Footer com versão -->
+  <div class="dashboard-footer">
+    <p>Cad+ ERP Hospitais v2.1.0 | © 2024 Todos os direitos reservados</p>
+  </div>
+</div>

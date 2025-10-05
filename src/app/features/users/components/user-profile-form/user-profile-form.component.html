@@ -1,0 +1,425 @@
+<div class="user-profile-form-container">
+  <div class="form-header">
+    <h2 mat-dialog-title>{{ getDialogTitle() }}</h2>
+    <button mat-icon-button 
+            (click)="closeDialog()"
+            class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-tab-group class="form-tabs" [(selectedIndex)]="selectedTabIndex">
+    
+    <!-- Tab: Dados Pessoais -->
+    <mat-tab label="Dados Pessoais">
+      <ng-template matTabContent>
+        <form [formGroup]="userForm" (ngSubmit)="onSubmitUser()" class="user-form">
+          <mat-dialog-content class="form-content">
+            
+            <!-- Personal Information Section -->
+            <div class="form-section">
+              <h3 class="section-title">Informações Pessoais</h3>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Nome</mat-label>
+                  <input matInput 
+                         formControlName="firstName"
+                         placeholder="Digite o nome">
+                  <mat-error *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+                    Nome é obrigatório
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Sobrenome</mat-label>
+                  <input matInput 
+                         formControlName="lastName"
+                         placeholder="Digite o sobrenome">
+                  <mat-error *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+                    Sobrenome é obrigatório
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>CPF</mat-label>
+                  <input matInput 
+                         formControlName="cpf"
+                         placeholder="000.000.000-00"
+                         maxlength="14"
+                         mask="000.000.000-00">
+                  <mat-error *ngIf="userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched">
+                    CPF inválido
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Email</mat-label>
+                  <input matInput 
+                         type="email"
+                         formControlName="email"
+                         placeholder="Digite o email">
+                  <mat-error *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+                    Email inválido
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Telefone</mat-label>
+                  <input matInput 
+                         formControlName="phone"
+                         placeholder="(11) 99999-9999"
+                         maxlength="15"
+                         mask="(00) 00000-0000">
+                  <mat-error *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched">
+                    Telefone inválido
+                  </mat-error>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Password Section (only for creation) -->
+            <div class="form-section" *ngIf="!isEditMode">
+              <h3 class="section-title">Senha</h3>
+              
+              <div class="form-row">
+                <mat-form-field appearance="outline" class="half-width">
+                  <mat-label>Senha</mat-label>
+                  <input matInput 
+                         [type]="hidePassword ? 'password' : 'text'"
+                         formControlName="password"
+                         placeholder="Digite a senha">
+                  <mat-icon matSuffix 
+                            (click)="hidePassword = !hidePassword">
+                    {{hidePassword ? 'visibility_off' : 'visibility'}}
+                  </mat-icon>
+                  <mat-error *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+                    Senha deve ter pelo menos 8 caracteres
+                  </mat-error>
+                </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="half-width">
+                      <mat-label>Confirmar Senha</mat-label>
+                      <input matInput 
+                             [type]="hideConfirmPassword ? 'password' : 'text'"
+                             formControlName="confirmPassword"
+                             placeholder="Confirme a senha">
+                      <mat-icon matSuffix 
+                                (click)="hideConfirmPassword = !hideConfirmPassword">
+                        {{hideConfirmPassword ? 'visibility_off' : 'visibility'}}
+                      </mat-icon>
+                      <mat-error *ngIf="userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched">
+                        As senhas devem ser iguais
+                      </mat-error>
+                  </mat-form-field>
+                  </div>
+                </div>
+                
+              </mat-dialog-content>
+
+              <mat-dialog-actions align="end" class="dialog-actions">
+                <button mat-button 
+                        type="button"
+                        (click)="closeDialog()"
+                        class="cancel-button">
+                  Cancelar
+                </button>
+                
+                <button mat-raised-button 
+                        color="primary"
+                        type="submit"
+                        [disabled]="isLoading || userForm.invalid"
+                        class="save-button">
+                  <mat-spinner class="loading-spinner" *ngIf="isLoading"></mat-spinner>
+                  <span *ngIf="!isLoading">
+                    {{ isEditMode ? 'Atualizar' : 'Próximo' }}
+                  </span>
+                </button>
+              </mat-dialog-actions>
+            </form>
+          </ng-template>
+        </mat-tab>
+
+        <!-- Tab: Endereços -->
+        <mat-tab label="Endereços">
+          <ng-template matTabContent>
+            
+            <!-- Address List -->
+            <div class="addresses-section">
+              <div class="section-header">
+                <h3 class="section-title">Endereços Cadastrados</h3>
+                <button mat-raised-button 
+                        color="primary" 
+                        (click)="toggleAddAddressForm()"
+                        [disabled]="showAddAddressForm">
+                  <mat-icon>add</mat-icon>
+                  {{ showAddAddressForm ? 'Cancelar' : 'Adicionar Endereço' }}
+                </button>
+              </div>
+
+              <div class="addresses-list" *ngIf="!isLoadingAddresses">
+                <mat-card class="address-card" 
+                          *ngFor="let address of userAddresses; let i = index" 
+                          [class.main-address]="address.isMain">
+                  
+                  <mat-card-header>
+                    <mat-card-title>
+                      {{ address.street }}, {{ address.number }}
+                      <mat-chip class="primary-chip" *ngIf="address.isMain">
+                        Principal
+                      </mat-chip>
+                    </mat-card-title>
+                    <mat-card-subtitle>
+                      {{ address.city }} - {{ address.state }}
+                    </mat-card-subtitle>
+                  </mat-card-header>
+                  
+                  <mat-card-content>
+                    <div class="address-info">
+                      <div class="address-detail-row">
+                        <div class="address-detail-item">
+                          <span class="detail-label">CEP</span>
+                          <span class="detail-value">{{ address.zipCode }}</span>
+                        </div>
+                        <div class="address-detail-item" *ngIf="address.neighborhood">
+                          <span class="detail-label">Bairro</span>
+                          <span class="detail-value">{{ address.neighborhood }}</span>
+                        </div>
+                      </div>
+                      
+                      <div class="address-detail-row">
+                        <div class="address-detail-item" *ngIf="address.complement">
+                          <span class="detail-label">Complemento</span>
+                          <span class="detail-value">{{ address.complement }}</span>
+                        </div>
+                        <div class="address-detail-item">
+                          <span class="detail-label">País</span>
+                          <span class="detail-value">{{ address.country }}</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Delete Address Confirmation Dialog -->
+<div class="delete-dialog-overlay" 
+     *ngIf="isDeleteAddressDialogOpen"
+     (click)="cancelAddressDeletion()">
+  <mat-card class="delete-dialog" (click)="$event.stopPropagation()">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>home</mat-icon>
+        Excluir Endereço
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <p>Tem certeza que deseja excluir o endereço?</p>
+      
+      <div class="address-info" *ngIf="addressToDelete">
+        <p><strong>Rua:</strong> {{ addressToDelete.street }}, {{ addressToDelete.number }}</p>
+        <p><strong>Cidade:</strong> {{ addressToDelete.city }} - {{ addressToDelete.state }}</p>
+        <p><strong>CEP:</strong> {{ addressToDelete.zipCode }}</p>
+        <p><strong>Tipo:</strong> {{ addressToDelete.isMain ? 'Principal' : 'Secundário' }}</p>
+      </div>
+      
+      <p class="delete-warning">
+        ⚠️ Esta ação não pode ser desfeita. O endereço será removido permanentemente.
+      </p>
+    </mat-card-content>
+    
+    <mat-card-actions>
+      <button mat-button (click)="cancelAddressDeletion()">Cancelar</button>
+      
+      <button mat-raised-button 
+              color="warn"
+              (click)="confirmAddressDeletion()"
+              [disabled]="isLoading">
+        <mat-icon>delete</mat-icon>
+        Excluir Endereço
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+                  </mat-card-content>
+                  
+                  <mat-card-actions align="end">
+                    <button mat-icon-button 
+                            color="primary"
+                            (click)="toggleAddressMain(address)"
+                            [disabled]="address.isMain"
+                            matTooltip="Definir como principal">
+                      <mat-icon>star{{address.isMain ? '' : '_border'}}</mat-icon>
+                    </button>
+                    
+                    <button mat-icon-button 
+                            color="accent"
+                            (click)="editAddress(address)"
+                            matTooltip="Editar endereço">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    
+                    <button mat-icon-button 
+                            color="warn"
+                            (click)="deleteAddress(address)"
+                            [disabled]="userAddresses.length <= 1"
+                            matTooltip="Excluir endereço">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-card-actions>
+                </mat-card>
+
+                <!-- Empty state -->
+                <div class="empty-state" *ngIf="userAddresses.length === 0">
+                  <mat-icon class="empty-icon">home</mat-icon>
+                  <p>Nenhum endereço cadastrado</p>
+                  <small>Adicione pelo menos um endereço para criar o usuário</small>
+                </div>
+              </div>
+
+              <!-- Loading state -->
+              <div class="loading-state" *ngIf="isLoadingAddresses">
+                <mat-spinner></mat-spinner>
+                <p>Carregando endereços...</p>
+              </div>
+            </div>
+
+            <!-- Add New Address Form -->
+            <div class="add-address-section" *ngIf="showAddAddressForm">
+              <div class="section-header">
+                <h3 class="section-title">{{ isEditingAddress ? 'Editar Endereço' : 'Adicionar Novo Endereço' }}</h3>
+              </div>
+
+              <form [formGroup]="addressForm" (ngSubmit)="onSubmitAddress()">
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="half-width">
+                    <mat-label>Rua *</mat-label>
+                    <input matInput 
+                           formControlName="street"
+                           placeholder="Digite o nome da rua">
+                    <mat-error *ngIf="addressForm.get('street')?.invalid && addressForm.get('street')?.touched">
+                      Rua é obrigatório
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="quarter-width">
+                    <mat-label>Número</mat-label>
+                    <input matInput 
+                           formControlName="number"
+                           placeholder="123">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="quarter-width">
+                    <mat-label>CEP *</mat-label>
+                    <input matInput 
+                           formControlName="zipCode"
+                           placeholder="00000-000"
+                           maxlength="9">
+                    <mat-error *ngIf="addressForm.get('zipCode')?.invalid && addressForm.get('zipCode')?.touched">
+                      CEP inválido
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="quarter-width">
+                    <mat-label>Cidade *</mat-label>
+                    <input matInput 
+                           formControlName="city"
+                           placeholder="Digite a cidade">
+                    <mat-error *ngIf="addressForm.get('city')?.invalid && addressForm.get('city')?.touched">
+                      Cidade é obrigatória
+                    </mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="quarter-width">
+                    <mat-label>Estado *</mat-label>
+                    <mat-select formControlName="state">
+                      <ng-container *ngFor="let state of stateOptions">
+                        <mat-option [value]="state.value">{{state.label}}</mat-option>
+                      </ng-container>
+                    </mat-select>
+                    <mat-error *ngIf="addressForm.get('state')?.invalid && addressForm.get('state')?.touched">
+                      Estado é obrigatório
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="half-width">
+                    <mat-label>Complemento</mat-label>
+                    <input matInput 
+                           formControlName="complement"
+                           placeholder="Apartamento, sala, etc.">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="quarter-width">
+                    <mat-label>Bairro</mat-label>
+                    <input matInput 
+                           formControlName="neighborhood"
+                           placeholder="Digite o bairro">
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="quarter-width">
+                    <mat-label>País</mat-label>
+                    <input matInput 
+                           formControlName="country"
+                           placeholder="País">
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-checkbox formControlName="isMain">
+                    Definir como endereço principal
+                  </mat-checkbox>
+                </div>
+
+                <div class="form-actions">
+                  <button mat-button 
+                          type="button"
+                          (click)="cancelAddAddress()"
+                          [disabled]="isLoading">
+                    Cancelar
+                  </button>
+                  
+                  <button mat-raised-button 
+                          color="primary"
+                          type="submit"
+                          [disabled]="isLoading || addressForm.invalid">
+                    <mat-spinner class="loading-spinner" *ngIf="isLoading"></mat-spinner>
+                    <span *ngIf="!isLoading">{{ isEditingAddress ? 'Atualizar Endereço' : 'Adicionar Endereço' }}</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Show message for new users -->
+
+            <!-- Action buttons for addresses tab -->
+            <div class="address-actions" *ngIf="!isEditMode">
+              <button mat-button 
+                      type="button"
+                      (click)="closeDialog()"
+                      class="cancel-button">
+                Cancelar
+              </button>
+              
+              <button mat-raised-button 
+                      color="primary"
+                      type="button"
+                      [disabled]="isLoading || userForm.invalid || userAddresses.length === 0"
+                      (click)="onCreateUser()"
+                      class="save-button">
+                <mat-spinner class="loading-spinner" *ngIf="isLoading"></mat-spinner>
+                <span *ngIf="!isLoading">Criar Usuário</span>
+              </button>
+            </div>
+
+          </ng-template>
+        </mat-tab>
+
+      </mat-tab-group>
+    </div>

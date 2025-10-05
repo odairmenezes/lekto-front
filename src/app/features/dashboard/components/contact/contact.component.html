@@ -1,0 +1,292 @@
+<div class="contact-container">
+  <!-- Header -->
+  <div class="contact-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Entre em Contato</h1>
+        <p>Estamos aqui para ajudar você com suporte técnico, vendas e outras informações sobre o CadPlus ERP</p>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button 
+                color="primary" 
+                (click)="goToMainMenu()"
+                class="main-menu-btn">
+          <mat-icon>home</mat-icon>
+          Menu Principal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="contact-content">
+    <!-- Formulário de Contato -->
+    <mat-card class="contact-form-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>send</mat-icon>
+          Enviar Mensagem
+        </mat-card-title>
+        <mat-card-subtitle>
+          Preencha o formulário abaixo e nossa equipe entrará em contato
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          
+          <!-- Dados do Usuário -->
+          <div class="form-section">
+            <h3>Seus Dados</h3>
+            <div class="row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Nome Completo</mat-label>
+                <input matInput formControlName="name" placeholder="João Silva">
+                <mat-error *ngIf="contactForm.get('name')?.hasError('required')">
+                  Nome é obrigatório
+                </mat-error>
+                <mat-error *ngIf="contactForm.get('name')?.hasError('name')">
+                  {{ contactForm.get('name')?.errors?.['name']?.message }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" placeholder="usuario@hospital.com.br">
+                <mat-icon matSuffix>email</mat-icon>
+                <mat-error *ngIf="contactForm.get('email')?.hasError('required')">
+                  Email é obrigatório
+                </mat-error>
+                <mat-error *ngIf="contactForm.get('email')?.hasError('email')">
+                  {{ contactForm.get('email')?.errors?.['email']?.message }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Telefone (Opcional)</mat-label>
+              <input matInput formControlName="phone" placeholder="(11) 99999-9999"
+                     (input)="formatPhone($event)">
+              <mat-icon matSuffix>phone</mat-icon>
+              <mat-error *ngIf="contactForm.get('phone')?.hasError('phone')">
+                {{ contactForm.get('phone')?.errors?.['phone']?.message }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <mat-divider></mat-divider>
+
+          <!-- Detalhes da Solicitação -->
+          <div class="form-section">
+            <h3>Detalhes da Solicitação</h3>
+            
+            <div class="row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Departamento</mat-label>
+                <mat-select formControlName="department">
+                  <mat-option 
+                    *ngFor="let option of contactOptions" 
+                    [value]="option.type"
+                    [class]="'option-' + option.color">
+                    <mat-icon>{{ option.icon }}</mat-icon>
+                    <span>{{ option.title }}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="contactForm.get('department')?.hasError('required')">
+                  Selecione um departamento
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Prioridade</mat-label>
+                <mat-select formControlName="priority">
+                  <mat-option 
+                    *ngFor="let option of priorityOptions" 
+                    [value]="option.value"
+                    [class]="'option-' + option.color">
+                    <mat-icon>{{ option.icon }}</mat-icon>
+                    <span>{{ option.label }}</span>
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="contactForm.get('priority')?.hasError('required')">
+                  Selecione uma prioridade
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Assunto</mat-label>
+              <input matInput formControlName="subject" placeholder="Breve descrição do assunto, ex: Problema ao cadastrar usuário">
+              <mat-error *ngIf="contactForm.get('subject')?.hasError('required')">
+                Assunto é obrigatório
+              </mat-error>
+              <mat-error *ngIf="contactForm.get('subject')?.hasError('minlength')">
+                Mínimo 10 caracteres
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Mensagem</mat-label>
+              <textarea 
+                matInput 
+                formControlName="message" 
+                placeholder="Descreva detalhadamente sua solicitação, problema ou dúvida..."
+                rows="6">
+              </textarea>
+              <mat-hint>Mínimo 20 caracteres - Seja o mais detalhado possível</mat-hint>
+              <mat-error *ngIf="contactForm.get('message')?.hasError('required')">
+                Mensagem é obrigatória
+              </mat-error>
+              <mat-error *ngIf="contactForm.get('message')?.hasError('minlength')">
+                Mínimo 20 caracteres
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Resumo da Seleção -->
+          <div class="selection-summary" *ngIf="selectedDepartment && selectedPriority">
+            <mat-card [class]="'summary-' + selectedDepartment.color">
+              <mat-card-content>
+                <h4>Resumo da Solicitação</h4>
+                <div class="summary-content">
+                  <div class="summary-item">
+                    <mat-icon>{{ selectedDepartment.icon }}</mat-icon>
+                    <span><strong>{{ selectedDepartment.title }}</strong></span>
+                    <span>{{ selectedDepartment.description }}</span>
+                  </div>
+                  
+                  <div class="summary-item">
+                    <mat-icon>{{ selectedPriority.icon }}</mat-icon>
+                    <span><strong>Prioridade:</strong> {{ selectedPriority.label }}</span>
+                  </div>
+
+                  <div class="summary-item contact-info">
+                    <mat-icon>email</mat-icon>
+                    <span>{{ selectedDepartment.email }}</span>
+                    <button mat-icon-button (click)="openEmailClient(selectedDepartment)">
+                      <mat-icon>mail</mat-icon>
+                    </button>
+                  </div>
+
+                  <div class="summary-item contact-info">
+                    <mat-icon>phone</mat-icon>
+                    <span>{{ selectedDepartment.phone }}</span>
+                    <button mat-icon-button (click)="copyContactInfo(selectedDepartment)">
+                      <mat-icon>content_copy</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="form-actions">
+            <button 
+              type="submit" 
+              mat-raised-button 
+              color="primary"
+              [disabled]="contactForm.invalid || isLoading">
+              <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+              <mat-icon *ngIf="!isLoading">send</mat-icon>
+              {{ isLoading ? 'Enviando...' : 'Enviar Mensagem' }}
+            </button>
+
+            <button 
+              type="button" 
+              mat-button 
+              (click)="contactForm.reset(); loadUserData()">
+              <mat-icon>clear</mat-icon>
+              Limpar Formulário
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Informações dos Departamentos -->
+    <mat-card class="departments-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>support_agent</mat-icon>
+          Nossos Departamentos
+        </mat-card-title>
+        <mat-card-subtitle>
+          Entre em contato com o departamento mais adequado para sua necessidade
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <div class="departments-grid">
+          <mat-card 
+            *ngFor="let dept of contactOptions" 
+            class="department-card"
+            [class]="'dept-' + dept.color">
+            
+            <mat-card-content>
+              <div class="department-header">
+                <mat-icon class="department-icon">{{ dept.icon }}</mat-icon>
+                <h3>{{ dept.title }}</h3>
+              </div>
+              
+              <p class="department-description">{{ dept.description }}</p>
+              
+              <div class="department-contact">
+                <div class="contact-item">
+                  <mat-icon>email</mat-icon>
+                  <span>{{ dept.email }}</span>
+                  <button mat-icon-button (click)="openEmailClient(dept)">
+                    <mat-icon>mail</mat-icon>
+                  </button>
+                </div>
+                
+                <div class="contact-item">
+                  <mat-icon>phone</mat-icon>
+                  <span>{{ dept.phone }}</span>
+                  <button mat-icon-button (click)="copyContactInfo(dept)">
+                    <mat-icon>content_copy</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Informações Adicionais -->
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-header">
+          <mat-icon>info</mat-icon>
+          <h3>Informações Importantes</h3>
+        </div>
+        
+        <div class="info-content">
+          <div class="info-item">
+              <mat-icon>access_time</mat-icon>
+            <div>
+              <h4>Horário de Atendimento</h4>
+              <p>Segunda a Sexta: 8h às 18h<br>Sabado: 8h às 12h</p>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <mat-icon>schedule</mat-icon>
+            <div>
+              <h4>Prazo de Resposta</h4>
+              <p>Baixa: 72 horas<br>Média: 24 horas<br>Alta: 8 horas<br>Urgente: 2 horas</p>
+            </div>
+          </div>
+          
+          <div class="info-item">
+            <mat-icon>security</mat-icon>
+            <div>
+              <h4>Segurança</h4>
+              <p>Todas as comunicações são criptografadas e confidenciais</p>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

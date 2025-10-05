@@ -1,0 +1,86 @@
+    <div class="login-container">
+      <!-- Menu Inicial Button removido - usuários devem fazer login primeiro -->
+
+<mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>
+        <h1 class="login-title">Cad+ ERP</h1>
+        <p class="login-subtitle">Entre com sua conta</p>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        
+        <!-- Email Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput 
+                 type="email" 
+                 formControlName="email"
+                 placeholder="Digite seu email">
+          <mat-icon matSuffix>email</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">
+            {{ getErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Senha</mat-label>
+          <input matInput 
+                 [type]="hidePassword ? 'password' : 'text'"
+                 formControlName="password"
+                 placeholder="Digite sua senha">
+          <button matSuffix 
+                  mat-icon-button 
+                  type="button"
+                  (click)="hidePassword = !hidePassword"
+                  [attr.aria-label]="'Mostrar senha'"
+                  [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            {{ getErrorMessage('password') }}
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Remember Me & Forgot Password -->
+        <div class="login-options">
+          <mat-checkbox>Lembrar-me</mat-checkbox>
+          <a href="#" (click)="navigateToForgotPassword()" class="forgot-password-link">
+            Esqueceu sua senha?
+          </a>
+        </div>
+
+        <!-- Submit Button -->
+        <button mat-raised-button 
+                color="primary" 
+                type="submit"
+                [disabled]="loginForm.invalid || isLoading"
+                class="login-button full-width">
+          <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+          <span *ngIf="!isLoading">Entrar</span>
+        </button>
+
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="login-actions">
+      <div class="login-footer-content">
+        <p>Não tem uma conta?</p>
+        <button mat-raised-button color="primary" (click)="navigateToRegister()">
+          <mat-icon>person_add</mat-icon>
+          Criar uma conta
+        </button>
+      </div>
+    </mat-card-actions>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>&copy; 2024 Cad+ ERP. Todos os direitos reservados.</p>
+    </div>
+
+  </mat-card>
+</div>

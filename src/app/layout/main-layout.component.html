@@ -1,0 +1,94 @@
+<div class="main-layout">
+  
+  <!-- App Bar -->
+  <mat-toolbar color="primary" class="app-toolbar">
+    <button mat-icon-button 
+            (click)="toggleSidebar()"
+            class="sidebar-toggle">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <button mat-button color="accent" 
+            class="menu-inicial-btn"
+            (click)="goToHome()">
+      <mat-icon>home</mat-icon>
+      Menu Inicial
+    </button>
+
+    <span class="app-title">Cad+ ERP</span>
+
+    <span class="spacer"></span>
+
+    <div class="user-section">
+      <span class="user-info">
+        <span class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</span>
+        <span class="user-role">Administrador do Sistema</span>
+      </span>
+      
+      <!-- Botão de Perfil -->
+      <button mat-icon-button 
+              class="profile-btn"
+              (click)="onNavigationItemClick('/profile')"
+              title="Ir para Perfil"
+              style="display: inline-flex !important; visibility: visible !important;">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      
+      <!-- Botão de Logout -->
+      <button mat-icon-button 
+              class="logout-btn"
+              (click)="onLogout()"
+              title="Sair">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-toolbar>
+
+  <!-- Layout Container -->
+  <div class="layout-container">
+    
+    <!-- Sidebar -->
+    <div class="sidebar" 
+         [class.sidebar-open]="sidebarOpen"
+         [class.sidebar-mobile]="isMobile">
+      
+      <mat-nav-list class="nav-list">
+        <ng-container *ngFor="let item of navigationItems">
+          <mat-list-item 
+            class="nav-item"
+            [class.active]="isActiveRoute(item.route)"
+            (click)="onNavigationItemClick(item.route)">
+            
+            <mat-icon matListIcon class="nav-icon">{{ item.icon }}</mat-icon>
+            <span matLine class="nav-label">{{ item.label }}</span>
+          </mat-list-item>
+        </ng-container>
+      </mat-nav-list>
+
+      <div class="sidebar-footer">
+        <div class="version-info">
+          <span>Versão 1.0.0</span>
+          <small>© 2024 Cad+ ERP</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" 
+         [class.sidebar-pushed]="sidebarOpen && !isMobile">
+      
+      <!-- Content Area -->
+      <div class="content-area">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mobile Sidebar Overlay -->
+  <div class="sidebar-overlay" 
+       *ngIf="sidebarOpen && isMobile"
+       (click)="toggleSidebar()">
+  </div>
+
+</div>

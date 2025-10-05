@@ -1,0 +1,264 @@
+<div class="user-form-container">
+  <div class="form-header">
+    <h2 mat-dialog-title>{{ getDialogTitle() }}</h2>
+    <button mat-icon-button 
+            (click)="closeDialog()"
+            class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+    <mat-dialog-content class="form-content">
+      
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3 class="section-title">Informações Pessoais</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Nome</mat-label>
+            <input matInput 
+                   formControlName="firstName"
+                   placeholder="Digite o nome">
+            <mat-error *ngIf="userForm.get('firstName')?.invalid && userForm.get('firstName')?.touched">
+              {{ getFieldErrorMessage('firstName') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Sobrenome</mat-label>
+            <input matInput 
+                   formControlName="lastName"
+                   placeholder="Digite o sobrenome">
+            <mat-error *ngIf="userForm.get('lastName')?.invalid && userForm.get('lastName')?.touched">
+              {{ getFieldErrorMessage('lastName') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>CPF</mat-label>
+            <input matInput 
+                   formControlName="cpf"
+                   placeholder="000.000.000-00"
+                   maxlength="14"
+                   mask="000.000.000-00">
+            <mat-error *ngIf="userForm.get('cpf')?.invalid && userForm.get('cpf')?.touched">
+              {{ getFieldErrorMessage('cpf') }}
+            </mat-error>
+            <mat-hint *ngIf="data?.user?.id" class="cpf-disabled-hint">
+              CPF não pode ser alterado após criação
+            </mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Telefone</mat-label>
+            <input matInput 
+                   formControlName="phone"
+                   placeholder="(11) 99999-9999"
+                   maxlength="15"
+                   mask="(00) 00000-0000">
+            <mat-error *ngIf="userForm.get('phone')?.invalid && userForm.get('phone')?.touched">
+              {{ getFieldErrorMessage('phone') }}
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput 
+                 type="email"
+                 formControlName="email"
+                 placeholder="Digite o email">
+          <mat-error *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            {{ getFieldErrorMessage('email') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Password Section (only for create mode) -->
+      <div class="form-section" *ngIf="!isEditMode">
+        <h3 class="section-title">Senha</h3>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Senha</mat-label>
+            <input matInput 
+                   [type]="hidePassword ? 'password' : 'text'"
+                   formControlName="password"
+                   placeholder="Digite a senha">
+            <button matSuffix 
+                    mat-icon-button 
+                    type="button"
+                    (click)="hidePassword = !hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-hint>Mínimo 8 caracteres com letras maiúsculas, minúsculas, números e símbolos</mat-hint>
+            <mat-error *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+              {{ getFieldErrorMessage('password') }}
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Confirmar Senha</mat-label>
+            <input matInput 
+                   [type]="hideConfirmPassword ? 'password' : 'text'"
+                   formControlName="confirmPassword"
+                   placeholder="Confirme a senha">
+            <button matSuffix 
+                    mat-icon-button 
+                    type="button"
+                    (click)="hideConfirmPassword = !hideConfirmPassword">
+              <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched">
+              Senhas não coincidem
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Addresses Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3 class="section-title">Endereços</h3>
+          <button type="button" 
+                  mat-stroked-button 
+                  color="primary"
+                  (click)="addAddress()"
+                  *ngIf="addresses.length < 5">
+            <mat-icon>add</mat-icon>
+            Adicionar Endereço
+          </button>
+        </div>
+        
+        <div formArrayName="addresses">
+          <div *ngFor="let address of addresses.controls; let i = index" 
+               class="address-form"
+               [formGroupName]="i">
+            
+            <div class="address-header">
+              <h4>{{ address.get('isMain')?.value ? 'Endereço Principal' : `Endereço ${i + 1}` }}</h4>
+              <div class="address-actions">
+                <button type="button" 
+                        mat-icon-button 
+                        *ngIf="!address.get('isMain')?.value"
+                        (click)="setMainAddress(i)"
+                        matTooltip="Definir como principal">
+                  <mat-icon>{{ address.get('isMain')?.value ? 'home' : 'home_outlined' }}</mat-icon>
+                </button>
+                <button type="button" 
+                        mat-icon-button 
+                        *ngIf="addresses.length > 1"
+                        (click)="removeAddress(i)"
+                        color="warn"
+                        matTooltip="Remover endereço">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="two-thirds-width">
+                <mat-label>Rua</mat-label>
+                <input matInput 
+                       formControlName="street"
+                       placeholder="Digite a rua">
+                <mat-error *ngIf="address.get('street')?.invalid && address.get('street')?.touched">
+                  {{ getAddressFieldErrorMessage(i, 'street') }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="one-third-width" hideRequiredMarker="true">
+                <mat-label>Número</mat-label>
+                <input matInput 
+                       formControlName="number"
+                       placeholder="123">
+              </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width" hideRequiredMarker="true">
+              <mat-label>Complemento</mat-label>
+              <input matInput 
+                     formControlName="complement"
+                     placeholder="Apartamento, casa, etc.">
+            </mat-form-field>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width" hideRequiredMarker="true">
+                <mat-label>Bairro</mat-label>
+                <input matInput 
+                       formControlName="neighborhood"
+                       placeholder="Digite o bairro">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Cidade</mat-label>
+                <input matInput 
+                       formControlName="city"
+                       placeholder="Digite a cidade">
+                <mat-error *ngIf="address.get('city')?.invalid && address.get('city')?.touched">
+                  {{ getAddressFieldErrorMessage(i, 'city') }}
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="one-third-width">
+                <mat-label>Estado</mat-label>
+                <mat-select formControlName="state">
+                  <mat-option *ngFor="let state of stateOptions" [value]="state.value">
+                    {{ state.label }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="address.get('state')?.invalid && address.get('state')?.touched">
+                  {{ getAddressFieldErrorMessage(i, 'state') }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="one-third-width">
+                <mat-label>CEP</mat-label>
+                <input matInput 
+                       formControlName="zipCode"
+                       placeholder="00000-000"
+                       maxlength="9"
+                       mask="00000-000">
+                <mat-error *ngIf="address.get('zipCode')?.invalid && address.get('zipCode')?.touched">
+                  {{ getAddressFieldErrorMessage(i, 'zipCode') }}
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="one-third-width">
+                <mat-label>País</mat-label>
+                <input matInput 
+                       formControlName="country"
+                       value="Brasil"
+                       [disabled]="true">
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </mat-dialog-content>
+
+    <mat-dialog-actions class="form-actions">
+      <button type="button" 
+              mat-button 
+              (click)="closeDialog()">
+        Cancelar
+      </button>
+      <button type="submit" 
+              mat-raised-button 
+              color="primary"
+              [disabled]="!isFormValidForSubmission() || isLoading"
+              (click)="handleButtonClick($event)">
+        <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+        <span *ngIf="!isLoading">{{ getSubmitButtonText() }}</span>
+      </button>
+    </mat-dialog-actions>
+
+  </form>
+</div>

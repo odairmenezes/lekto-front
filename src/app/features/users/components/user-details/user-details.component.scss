@@ -1,0 +1,313 @@
+.user-details-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+.menu-inicial-container {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: flex-start;
+
+  .menu-inicial-btn-standalone {
+    background: linear-gradient(135deg, #2196f3 0%, #21cbf3 100%);
+    color: white;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-weight: 600;
+    text-transform: none;
+    font-size: 16px;
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+      background: linear-gradient(135deg, #1976d2 0%, #1fb3d3 100%);
+    }
+
+    mat-icon {
+      margin-right: 12px;
+      font-size: 20px;
+    }
+
+    ::ng-deep .mat-mdc-button-wrapper {
+      font-weight: 600;
+      text-transform: none;
+      font-size: 16px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  
+  p {
+    margin-top: 16px;
+    color: #666;
+    font-size: 16px;
+  }
+}
+
+.details-content {
+  .details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .header-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      .user-title {
+        h1 {
+          margin: 0;
+          font-size: 28px;
+          font-weight: 600;
+          color: #333;
+        }
+
+        .user-chip {
+          margin-top: 8px;
+          
+          .status-icon {
+            font-size: 18px;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+
+    // Estilos de header-actions removidos - botões não mais utilizados
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+
+    .detail-card {
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.3s ease;
+
+      &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      }
+
+      mat-card-header {
+        mat-card-title {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 18px;
+          font-weight: 600;
+          color: #333;
+          
+          mat-icon {
+            color: #2196f3;
+          }
+        }
+      }
+
+      mat-card-content {
+        .info-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+
+          .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .info-label {
+              font-weight: 600;
+              color: #666;
+              font-size: 14px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+
+            .info-value {
+              color: #333;
+              font-size: 16px;
+              
+              mat-chip {
+                font-size: 12px;
+                font-weight: 500;
+                
+                .status-icon {
+                  font-size: 16px;
+                  margin-right: 4px;
+                }
+              }
+            }
+          }
+        }
+
+        .addresses-list {
+          .address-item {
+            padding: 16px 0;
+
+            .address-header {
+              margin-bottom: 12px;
+              display: flex;
+              align-items: center;
+              gap: 12px;
+
+              .main-address-chip {
+                font-size: 12px;
+                font-weight: 600;
+                
+                mat-icon {
+                  font-size: 16px;
+                  margin-right: 4px;
+                }
+              }
+
+              .address-type {
+                font-size: 14px;
+                font-weight: 500;
+                color: #666;
+              }
+            }
+
+            .address-details {
+              p {
+                margin: 4px 0;
+                color: #333;
+
+                &:first-child {
+                  font-weight: 600;
+                  color: #2196f3;
+                }
+              }
+            }
+          }
+
+          mat-divider {
+            margin: 16px 0;
+          }
+        }
+
+        .no-data {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 40px 20px;
+          
+          mat-icon {
+            font-size: 48px;
+            color: #ccc;
+            margin-bottom: 16px;
+          }
+
+          p {
+            color: #666;
+            font-size: 16px;
+          }
+        }
+      }
+
+      &.addresses-card {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  .error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+
+    .error-card {
+      min-width: 400px;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+      .error-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 40px 20px;
+
+        mat-icon {
+          font-size: 64px;
+          width: 64px;
+          height: 64px;
+          margin-bottom: 24px;
+        }
+
+        h2 {
+          margin: 0 0 16px 0;
+          color: #333;
+          font-size: 24px;
+          font-weight: 600;
+        }
+
+        p {
+          margin: 0 0 24px 0;
+          color: #666;
+          font-size: 16px;
+          line-height: 1.5;
+        }
+
+        button {
+          font-weight: 500;
+          
+          mat-icon {
+            font-size: 18px;
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .user-details-container {
+    padding: 16px;
+  }
+
+  .details-content {
+    .details-header {
+      flex-direction: column;
+      gap: 16px;
+      align-items: stretch;
+
+      // Estilos responsivos de header-actions removidos
+    }
+
+    .details-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .details-content {
+    .details-header {
+      padding: 16px;
+      
+      // Estilos de header-actions para mobile removidos
+    }
+  }
+}

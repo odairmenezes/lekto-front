@@ -1,0 +1,172 @@
+<div class="audit-container">
+  <!-- Header -->
+  <div class="audit-header">
+    <div class="header-content">
+      <div class="header-text">
+        <h1>
+          <mat-icon>assessment</mat-icon>
+          Logs de Auditoria
+        </h1>
+        <p>Monitore todas as alterações realizadas no sistema CadPlus ERP</p>
+      </div>
+      <div class="header-actions">
+        <button mat-raised-button 
+                color="primary" 
+                (click)="clearSearch()"
+                class="clear-btn">
+          <mat-icon>refresh</mat-icon>
+          Limpar Busca
+        </button>
+        <button mat-icon-button 
+                color="warn" 
+                (click)="closeModal()"
+                class="close-btn"
+                matTooltip="Fechar">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="content-wrapper">
+    <div class="search-section">
+      <mat-card class="search-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>person_search</mat-icon>
+            Buscar Logs por CPF
+          </mat-card-title>
+          <mat-card-subtitle>
+            Visualize todas as alterações feitas por um usuário específico através do CPF
+          </mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <form [formGroup]="cpfSearchForm" class="search-form">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>CPF do Usuário</mat-label>
+              <input matInput 
+                     formControlName="cpf"
+                     placeholder="Digite o CPF do usuário"
+                     mask="000.000.000-00">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="cpfSearchForm.get('cpf')?.invalid && cpfSearchForm.get('cpf')?.touched">
+                {{ getCpfErrorMessage() }}
+              </mat-error>
+            </mat-form-field>
+          </form>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-raised-button 
+                  color="primary"
+                  (click)="searchByCpf()"
+                  [disabled]="isLoading || cpfSearchForm.invalid">
+            <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+            <mat-icon *ngIf="!isLoading">search</mat-icon>
+            <span *ngIf="!isLoading">Buscar</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section">
+      <mat-card class="results-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>list</mat-icon>
+            Resultados da Busca
+            <mat-chip *ngIf="totalCount > 0" color="primary">
+              {{ totalCount }} logs encontrados
+            </mat-chip>
+          </mat-card-title>
+        </mat-card-header>
+
+        <mat-card-content>
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="loading-state">
+            <mat-spinner diameter="40"></mat-spinner>
+            <p>Carregando logs de auditoria...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="!isLoading && auditLogs.length === 0 && cpfSearchForm.get('cpf')?.value" class="empty-state">
+            <mat-icon>inbox</mat-icon>
+            <h3>Nenhum log encontrado</h3>
+            <p>Não foram encontrados logs para o CPF informado</p>
+          </div>
+
+          <!-- Initial State -->
+          <div *ngIf="!isLoading && auditLogs.length === 0 && !cpfSearchForm.get('cpf')?.value" class="empty-state">
+            <mat-icon>search</mat-icon>
+            <h3>Digite um CPF para buscar</h3>
+            <p>Informe o CPF do usuário para visualizar os logs de auditoria</p>
+          </div>
+
+          <!-- Logs List -->
+          <div *ngIf="!isLoading && auditLogs.length > 0" class="logs-list">
+            <div *ngFor="let log of auditLogs; let i = index" class="log-item">
+              <div class="log-header">
+                <div class="log-icon">
+                  <mat-icon [color]="getActionColor(log.fieldName)">
+                    {{ getEntityIcon(log.entityType) }}
+                  </mat-icon>
+                </div>
+                <div class="log-info">
+                  <h4>{{ getFieldDisplayName(log.fieldName) }}</h4>
+                  <p>{{ getEntityDisplayName(log.entityType) }} • {{ log.entityId }}</p>
+                </div>
+                <div class="log-time">
+                  <mat-chip color="accent">
+                    <mat-icon>schedule</mat-icon>
+                    {{ formatDate(log.changedAt) }}
+                  </mat-chip>
+                </div>
+              </div>
+
+              <div class="log-content">
+                <div class="value-change">
+                  <div class="old-value">
+                    <span class="label">Valor Anterior:</span>
+                    <span class="value">{{ log.oldValue || 'N/A' }}</span>
+                  </div>
+                  <mat-icon class="arrow-icon">arrow_forward</mat-icon>
+                  <div class="new-value">
+                    <span class="label">Novo Valor:</span>
+                    <span class="value">{{ log.newValue || 'N/A' }}</span>
+                  </div>
+                </div>
+
+                <div class="log-details">
+                  <div class="detail-item">
+                    <mat-icon>person</mat-icon>
+                    <span>Usuário: {{ log.userId }}</span>
+                  </div>
+                  <div class="detail-item" *ngIf="log.ipAddress">
+                    <mat-icon>computer</mat-icon>
+                    <span>IP: {{ log.ipAddress }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <mat-divider *ngIf="i < auditLogs.length - 1"></mat-divider>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <!-- Pagination -->
+        <mat-paginator 
+          *ngIf="!isLoading && auditLogs.length > 0"
+          [length]="totalCount"
+          [pageSize]="pageSize"
+          [pageIndex]="currentPage"
+          [pageSizeOptions]="[10, 20, 50, 100]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
+      </mat-card>
+    </div>
+  </div>
+</div>

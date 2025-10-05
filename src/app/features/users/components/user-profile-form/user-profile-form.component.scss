@@ -1,0 +1,622 @@
+.user-profile-form-container {
+  width: 100%;
+  height: auto;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #e0e0e0;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .close-button {
+      color: #666;
+    }
+  }
+
+  .form-tabs {
+    flex: 1;
+    overflow: hidden;
+    
+    .mat-tab-group {
+      height: 100%;
+      
+      .mat-tab-body-wrapper {
+        flex: 1;
+        overflow: hidden;
+      }
+      
+      .mat-tab-body-content {
+        padding: 0px 0px 24px 0px;
+        overflow-y: auto;
+        max-height: calc(90vh - 120px);
+        
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 3px;
+        }
+        
+        &::-webkit-scrollbar-thumb {
+          background: #c1c1c1;
+          border-radius: 3px;
+        }
+        
+        &::-webkit-scrollbar-thumb:hover {
+          background: #a8a8a8;
+        }
+      }
+    }
+  }
+
+    .user-form {
+      padding-top: 20px;
+      
+      .form-section {
+        margin-bottom: 2rem;
+        padding: 0 24px 20px 24px;
+        
+        .section-title {
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 1rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 2px solid #e9ecef;
+        }
+      }
+
+      .form-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+
+        .half-width {
+          flex: 1;
+        }
+        
+        .quarter-width {
+          flex: 0 0 calc(25% - 12px);
+        }
+
+        .mat-form-field {
+          width: 100%;
+        }
+      }
+    }
+
+  .addresses-section {
+    padding: 20px 24px 20px 24px;
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        gap: 16px;
+
+        .section-title {
+          margin: 0;
+          font-size: 1.3rem;
+          font-weight: 500;
+          flex: 1;
+        }
+
+        button {
+          white-space: nowrap;
+          min-width: 160px;
+          
+          mat-icon {
+            margin-right: 8px;
+          }
+        }
+      }
+
+      .addresses-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+
+        .address-card {
+          transition: all 0.3s ease;
+          display: flex;
+          flex-direction: column;
+          height: auto;
+          min-height: 140px;
+
+          &.main-address {
+            border-left: 4px solid #ffc107;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+            background-color: rgba(255, 193, 7, 0.05);
+          }
+
+          .mat-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            .primary-chip {
+              background-color: #ffc107;
+              color: #000;
+              font-size: 0.75rem;
+              height: 24px;
+            }
+          }
+
+          .address-info {
+            margin-top: 12px;
+
+            .address-detail-row {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 8px;
+              gap: 16px;
+              
+              &:last-child {
+                margin-bottom: 0;
+              }
+            }
+
+            .address-detail-item {
+              display: flex;
+              flex-direction: column;
+              flex: 1;
+              min-width: 0;
+
+              .detail-label {
+                font-size: 0.75rem;
+                font-weight: 500;
+                color: #666;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin-bottom: 2px;
+              }
+
+              .detail-value {
+                font-size: 0.9rem;
+                color: #333;
+                font-weight: 400;
+                word-wrap: break-word;
+              }
+            }
+          }
+
+          .mat-card-actions {
+            gap: 4px;
+
+            button {
+              &:disabled {
+                opacity: 0.5;
+              }
+            }
+          }
+        }
+
+        .empty-state {
+          text-align: center;
+          padding: 60px 24px 40px 24px;
+          color: #666;
+
+          .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+          }
+
+          p {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+          }
+
+          small {
+            font-size: 1rem;
+            opacity: 0.8;
+          }
+        }
+      }
+
+      .loading-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0.7;
+        padding: 60px 24px 40px 24px;
+        
+        mat-spinner {
+          margin-bottom: 20px;
+        }
+        
+        p {
+          margin: 0;
+          color: #666;
+          font-size: 1rem;
+          font-weight: 500;
+        }
+      }
+    }
+
+    .add-address-section {
+      margin: 24px 24px 0 24px;
+      padding: 24px;
+      border: 2px dashed #1976d2;
+      border-radius: 8px;
+      background-color: rgba(25, 118, 210, 0.05);
+      animation: slideDown 0.3s ease-out;
+
+      .section-header {
+        margin-bottom: 24px;
+
+        .section-title {
+          margin: 0;
+          font-size: 1.2rem;
+          font-weight: 500;
+          color: #1976d2;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+
+          &::before {
+            content: '📍';
+            font-size: 1.3rem;
+          }
+        }
+      }
+
+      .form-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+
+        .half-width {
+          flex: 1;
+        }
+
+        .quarter-width {
+          flex: 0 0 calc(25% - 12px);
+        }
+
+        .mat-form-field {
+          width: 100%;
+        }
+
+        mat-checkbox {
+          align-self: center;
+        }
+      }
+
+      .form-actions {
+        margin-top: 24px;
+        padding-bottom: 8px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+
+        button {
+          min-width: 150px;
+        }
+      }
+    }
+
+    .info-section {
+      margin: 24px 24px 0 24px;
+
+      .info-card {
+        .info-content {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 16px;
+
+          .info-icon {
+            color: #1976d2;
+            font-size: 24px;
+          }
+
+          h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            color: #333;
+          }
+
+          p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+
+  .dialog-actions {
+    padding: 16px 24px;
+    border-top: 1px solid #e0e0e0;
+    gap: 8px;
+
+    button {
+      min-width: 120px;
+
+      &.save-button {
+        position: relative;
+        
+        .loading-spinner {
+          width: 20px;
+          height: 20px;
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+
+// Animations
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .user-profile-form-container {
+    max-width: 100%;
+    
+    .form-tabs {
+      .mat-tab-body-content {
+        padding: 0px 0px 16px 0px;
+      }
+    }
+    
+    .user-form {
+      padding-top: 16px;
+    }
+    
+    .addresses-section {
+      padding: 16px 16px 20px 16px;
+    }
+    
+    .form-row {
+      flex-direction: column;
+      
+      .half-width,
+      .quarter-width {
+        flex: none;
+      }
+    }
+    
+    .addresses-section {
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+
+        .section-title {
+          margin-bottom: 0;
+        }
+
+        button {
+          align-self: stretch;
+          min-width: auto;
+        }
+      }
+
+      .addresses-list {
+        grid-template-columns: 1fr;
+        gap: 12px;
+
+        .address-card {
+          .mat-card-header {
+            .mat-card-title {
+              font-size: 1rem;
+            }
+          }
+
+          .address-info {
+            .address-detail-row {
+              flex-direction: column;
+              gap: 8px;
+              margin-bottom: 12px;
+            }
+
+            .address-detail-item {
+              .detail-label {
+                font-size: 0.7rem;
+              }
+
+              .detail-value {
+                font-size: 0.85rem;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .add-address-section {
+      padding: 16px;
+      
+      .section-header {
+        .section-title {
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}
+
+// Dark theme support
+@media (prefers-color-scheme: dark) {
+  .user-profile-form-container {
+    .section-title {
+      color: #fff;
+    }
+    
+    .addresses-section {
+      .addresses-list {
+        .address-card {
+          .address-info p {
+            color: #ccc;
+          }
+        }
+        
+        .empty-state {
+          color: #ccc;
+        }
+      }
+    }
+    
+    .info-section {
+      .info-card {
+        .info-content {
+          h4 {
+            color: #fff;
+          }
+          
+          p {
+            color: #ccc;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Delete Dialog Styles (copiado do user-list.component.scss)
+.delete-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.delete-dialog {
+  max-width: 450px;
+  margin: 16px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: modalFadeIn 0.3s ease-out;
+  
+  mat-card-header {
+    background: #f44336;
+    color: white;
+    border-radius: 12px 12px 0 0;
+    
+    mat-card-title {
+      color: white;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+  
+  mat-card-content {
+    padding: 24px;
+    
+    p {
+      margin: 0 0 12px 0;
+      font-size: 1rem;
+      line-height: 1.5;
+      
+      &:first-child {
+        font-weight: 500;
+      }
+    }
+
+    .address-info {
+      margin: 16px 0;
+      padding: 12px;
+      background: #f5f5f5;
+      border-radius: 6px;
+      
+      p {
+        margin: 0 0 6px 0;
+        font-size: 0.9rem;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  mat-card-actions {
+    padding: 0 24px 24px 24px;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+}
+
+.delete-warning {
+  color: #d32f2f;
+  font-weight: 600;
+  margin-top: 12px !important;
+  padding: 8px 12px;
+  background: #ffebee;
+  border: 1px solid #ffcdd2;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Estilos para botões de ação na aba de endereços
+.address-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 16px 24px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 24px;
+
+  .cancel-button {
+    color: #666;
+  }
+
+  .save-button {
+    min-width: 120px;
+    
+    .loading-spinner {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+    }
+  }
+}

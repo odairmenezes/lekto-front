@@ -1,0 +1,327 @@
+.main-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.menu-inicial-btn {
+  margin-left: 16px;
+  background: linear-gradient(135deg, #2196f3 0%, #21cbf3 100%);
+  color: white !important;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    background: linear-gradient(135deg, #1976d2 0%, #1fb3d3 100%);
+  }
+
+  mat-icon {
+    margin-right: 8px;
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+
+  ::ng-deep .mat-mdc-button-wrapper {
+    font-weight: 600;
+    text-transform: none;
+    font-size: 14px;
+  }
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 1.3rem;
+  margin-left: 8px;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+
+  .user-name {
+    color: white;
+    font-weight: 500;
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+
+  .user-role {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    opacity: 0.8;
+    line-height: 1.2;
+  }
+}
+
+.profile-btn {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: #ff4081 !important;
+  color: white !important;
+  border-radius: 50% !important;
+  margin-right: 8px !important;
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  &:hover {
+    background-color: #e91e63 !important;
+    transform: scale(1.1) !important;
+  }
+  
+  mat-icon {
+    font-size: 20px !important;
+    color: white !important;
+  }
+}
+
+.logout-btn {
+  width: 40px;
+  height: 40px;
+  mat-icon {
+    font-size: 20px !important;
+  }
+}
+
+.user-menu-button {
+  width: 40px;
+  height: 40px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.layout-container {
+  display: flex;
+  height: calc(100vh - 64px);
+  margin-top: 64px;
+}
+
+// Sidebar Styles
+.sidebar {
+  width: 280px;
+  background: white;
+  border-right: 1px solid #e0e0e0;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  position: relative;
+  z-index: 999;
+
+  &.sidebar-open {
+    transform: translateX(0);
+  }
+
+  &.sidebar-mobile {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+  }
+}
+
+.nav-list {
+  padding: 16px 0;
+  height: calc(100% - 100px); // Account for footer
+}
+
+.nav-item {
+  margin: 4px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  &.active {
+    background-color: #667eea;
+    color: white;
+
+    .nav-icon {
+      color: white;
+    }
+
+    .nav-label {
+      color: white;
+      font-weight: 600;
+    }
+  }
+
+  .nav-icon {
+    margin-right: 16px;
+    color: #666;
+  }
+
+  .nav-label {
+    pointer-events: none;
+    color: #333;
+    font-weight: 500;
+  }
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  border-top: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.version-info {
+  text-align: center;
+
+  span {
+    font-size: 0.8rem;
+    color: #666;
+    font-weight: 500;
+  }
+
+  small {
+    display: block;
+    font-size: 0.7rem;
+    color: #999;
+    margin-top: 4px;
+  }
+}
+
+// Main Content Styles
+.main-content {
+  flex: 1;
+  background: #f8f9fa;
+  overflow-y: auto;
+  transition: margin-left 0.3s ease;
+
+  &.sidebar-pushed {
+    margin-left: 0; // Sidebar is normally hidden
+  }
+}
+
+.content-area {
+  min-height: 100%;
+  padding: 0; // Components handle their own padding
+}
+
+// Mobile Sidebar Overlay
+.sidebar-overlay {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+// Desktop Styles
+@media (min-width: 768px) {
+  .sidebar {
+    transform: translateX(0);
+    position: relative;
+    box-shadow: none;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar-overlay {
+    display: none;
+  }
+
+  .sidebar-toggle {
+    display: none;
+  }
+}
+
+// Mobile Styles
+@media (max-width: 767px) {
+  .user-info {
+    display: none;
+  }
+
+  .app-title {
+    font-size: 1.1rem;
+  }
+
+  .sidebar {
+    width: 260px;
+  }
+}
+
+// Extra small screens
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%;
+  }
+
+  .app-title {
+    display: none;
+  }
+}
+
+// Material Menu Customization
+::ng-deep .mat-menu-panel {
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+::ng-deep .mat-menu-content {
+  padding: 8px 0;
+}
+
+::ng-deep .mat-menu-item {
+  height: 40px !important;
+  line-height: 40px !important;
+  
+  .mat-icon {
+    margin-right: 16px;
+  }
+}
+
+::ng-deep .mat-divider {
+  margin: 8px 0;
+}

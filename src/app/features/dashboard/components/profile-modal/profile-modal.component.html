@@ -1,0 +1,245 @@
+<div class="profile-modal-container">
+  
+  <!-- Header -->
+  <div class="profile-header">
+    <div class="user-avatar-section">
+      <div class="user-avatar">
+        <span class="avatar-text">{{ getUserInitials() }}</span>
+      </div>
+      <div class="user-info">
+        <h1 class="user-name">{{ currentUser?.firstName }} {{ currentUser?.lastName }}</h1>
+        <p class="user-email">{{ currentUser?.email }}</p>
+        <div class="user-meta">
+          <span class="member-since">Membro desde {{ getMemberSince() }}</span>
+          <span class="last-login">Última conexão: {{ getLastLogin() }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <!-- Botão Fechar -->
+      <button mat-icon-button 
+              (click)="closeModal()"
+              title="Fechar"
+              class="close-btn">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <!-- Botão Editar Perfil -->
+      <button mat-stroked-button 
+              (click)="toggleEdit()"
+              *ngIf="!isEditing">
+        <mat-icon>edit</mat-icon>
+        Editar Perfil
+      </button>
+      
+      <!-- Botão Logout -->
+      <button mat-icon-button 
+              (click)="logout()"
+              title="Sair do sistema"
+              class="logout-btn">
+        <mat-icon>logout</mat-icon>
+      </button>
+      
+      <div *ngIf="isEditing" class="edit-actions">
+        <button mat-button 
+                (click)="cancelEdit()">
+          Cancelar
+        </button>
+        <button mat-raised-button 
+                color="primary"
+                (click)="onSubmit()"
+                [disabled]="profileForm.invalid || isLoading">
+          <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
+          <span *ngIf="!isLoading">Salvar</span>
+        </button>
+      </div>
+      
+      <button mat-icon-button (click)="togglePasswordChange()" matTooltip="Alterar senha">
+        <mat-icon>lock</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Profile Form -->
+  <div class="profile-form-section">
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>person</mat-icon>
+          Informações Pessoais
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="profileForm" class="profile-form">
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nome</mat-label>
+              <input matInput 
+                     formControlName="firstName"
+                     placeholder="Digite seu nome"
+                     [readonly]="!isEditing">
+              <mat-error *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+                {{ getFieldErrorMessage('firstName') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Sobrenome</mat-label>
+              <input matInput 
+                     formControlName="lastName"
+                     placeholder="Digite seu sobrenome"
+                     [readonly]="!isEditing">
+              <mat-error *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+                {{ getFieldErrorMessage('lastName') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Email</mat-label>
+              <input matInput 
+                     type="email"
+                     formControlName="email"
+                     placeholder="Digite seu email"
+                     [readonly]="!isEditing">
+              <mat-error *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                {{ getFieldErrorMessage('email') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>CPF</mat-label>
+              <input matInput 
+                     formControlName="cpf"
+                     placeholder="Digite seu CPF"
+                     [readonly]="!isEditing">
+              <mat-error *ngIf="profileForm.get('cpf')?.invalid && profileForm.get('cpf')?.touched">
+                {{ getFieldErrorMessage('cpf') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Telefone</mat-label>
+              <input matInput 
+                     formControlName="phone"
+                     placeholder="Digite seu telefone"
+                     [readonly]="!isEditing">
+              <mat-error *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched">
+                {{ getFieldErrorMessage('phone') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Alteração de Senha -->
+    <mat-card class="password-card" *ngIf="showPasswordFields">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>lock</mat-icon>
+          Alterar Senha
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <form [formGroup]="passwordForm" class="password-form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Senha Atual</mat-label>
+              <input matInput 
+                     type="password"
+                     formControlName="currentPassword"
+                     placeholder="Digite sua senha atual">
+              <mat-error *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+                {{ getPasswordFieldErrorMessage('currentPassword') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Nova Senha</mat-label>
+              <input matInput 
+                     type="password"
+                     formControlName="newPassword"
+                     placeholder="Digite sua nova senha">
+              <mat-error *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+                {{ getPasswordFieldErrorMessage('newPassword') }}
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="half-width">
+              <mat-label>Confirmar Nova Senha</mat-label>
+              <input matInput 
+                     type="password"
+                     formControlName="confirmPassword"
+                     placeholder="Confirme sua nova senha">
+              <mat-error *ngIf="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched">
+                {{ getPasswordFieldErrorMessage('confirmPassword') }}
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-card-content>
+      
+      <mat-card-actions>
+        <button mat-button (click)="cancelPasswordChange()">
+          Cancelar
+        </button>
+        <button mat-raised-button 
+                color="primary"
+                (click)="onSubmitPassword()"
+                [disabled]="passwordForm.invalid || isChangingPassword">
+          <mat-spinner diameter="20" *ngIf="isChangingPassword"></mat-spinner>
+          <span *ngIf="!isChangingPassword">Alterar Senha</span>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+
+    <!-- Informações do Sistema -->
+    <mat-card class="system-info-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>settings</mat-icon>
+          Informações do Sistema
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="system-info-grid">
+          <div class="info-item">
+            <span class="info-label">ID do Usuário:</span>
+            <span class="info-value">{{ currentUser?.id }}</span>
+          </div>
+          
+          <div class="info-item">
+            <span class="info-label">Status da Conta:</span>
+            <span class="info-value">
+              <mat-chip [color]="currentUser?.isActive ? 'primary' : 'warn'">
+                {{ currentUser?.isActive ? 'Ativo' : 'Inativo' }}
+              </mat-chip>
+            </span>
+          </div>
+          
+          <div class="info-item">
+            <span class="info-label">Criado em:</span>
+            <span class="info-value">{{ getMemberSince() }}</span>
+          </div>
+          
+          <div class="info-item">
+            <span class="info-label">Última Atualização:</span>
+            <span class="info-value">{{ getLastLogin() }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+</div>
